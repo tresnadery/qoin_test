@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-type Dice interface{}
+type Dice interface {
+	Number() int
+	Roll()
+}
 
 type dice struct {
 	number int
