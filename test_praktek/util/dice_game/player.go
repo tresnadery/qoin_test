@@ -1,6 +1,11 @@
 package dice_game
 
-type Player interface{}
+type Player interface {
+	Play()
+	Dices() []Dice
+	AddPoint()
+	Point() int
+}
 
 type player struct {
 	dices []Dice
