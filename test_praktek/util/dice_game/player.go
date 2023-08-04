@@ -16,3 +16,21 @@ func NewPlayer(diceCount int) Player {
 		dices: dices,
 	}
 }
+
+func (p *player) Play() {
+	for _, dice := range p.dices {
+		dice.Roll()
+	}
+}
+
+func (p *player) Dices() []Dice {
+	return p.dices
+}
+
+func (p *player) AddPoint() {
+	p.point++
+}
+
+func (p *player) Point() int {
+	return p.point
+}
