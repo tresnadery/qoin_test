@@ -2,7 +2,7 @@
 
 ## Database Diagram
 
-![Database Diagram]
+![Database Diagram](https://github.com/tresnadery/qoin_test/blob/master/test_teori/database-diagram.png)
 
 ## Tech Stack
 
