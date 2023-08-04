@@ -39,3 +39,32 @@ func (p *player) AddPoint() {
 func (p *player) Point() int {
 	return p.point
 }
+
+func (p *player) RemoveDice(index int) {
+	if index == 0 {
+		p.dices = p.dices[index+1:]
+		return
+	}
+
+	if index+1 == len(p.dices) {
+		p.dices = p.dices[:index]
+		return
+	}
+	p.dices = append(p.dices[:index], p.dices[index+1:]...)
+}
+
+func (p *player) PrintAllDiceNumber() string {
+	var numbers []string
+	for _, dice := range p.dices {
+		numbers = append(numbers, fmt.Sprintf("%d", dice.GetNumber()))
+	}
+	return strings.Join(numbers, ",")
+}
+
+func (p *player) Info(index int) {
+	if len(p.Dices()) == 0 {
+		fmt.Printf("_ (Berhenti bermain karena tidak memiliki dadu)")
+		return
+	}
+	fmt.Printf("Pemain #%d (%d): %s\n", (index + 1), p.Point(), p.PrintAllDiceNumber())
+}
