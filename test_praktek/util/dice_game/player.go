@@ -1,10 +1,19 @@
 package dice_game
 
+import (
+	"fmt"
+	"strings"
+)
+
 type Player interface {
 	Play()
 	Dices() []Dice
 	AddPoint()
 	Point() int
+	RemoveDice(index int)
+	PrintAllDiceNumber() string
+	Info(index int)
+	AddDice(dice Dice)
 }
 
 type player struct {
@@ -56,15 +65,21 @@ func (p *player) RemoveDice(index int) {
 func (p *player) PrintAllDiceNumber() string {
 	var numbers []string
 	for _, dice := range p.dices {
-		numbers = append(numbers, fmt.Sprintf("%d", dice.GetNumber()))
+		numbers = append(numbers, fmt.Sprintf("%d", dice.Number()))
 	}
 	return strings.Join(numbers, ",")
 }
 
 func (p *player) Info(index int) {
 	if len(p.Dices()) == 0 {
-		fmt.Printf("_ (Berhenti bermain karena tidak memiliki dadu)")
+		fmt.Printf("Pemain #%d (%d): _ (Berhenti bermain karena tidak memiliki dadu)\n", (index + 1), p.Point())
 		return
 	}
 	fmt.Printf("Pemain #%d (%d): %s\n", (index + 1), p.Point(), p.PrintAllDiceNumber())
+}
+
+func (p *player) AddDice(dice Dice) {
+	if len(p.dices) > 0 {
+		p.dices = append(p.dices, dice)
+	}
 }
