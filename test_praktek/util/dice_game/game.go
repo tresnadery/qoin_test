@@ -1,5 +1,9 @@
 package dice_game
 
+import (
+	"fmt"
+)
+
 type Game interface {
 	Start()
 }
@@ -36,6 +40,7 @@ func (g *game) Start() {
 		}
 
 		g.playerActive = 0
+		g.lastActivePlayer = []int{}
 		fmt.Printf("Setelah evaluasi:\n")
 		for iPlayer, player := range g.players {
 			g.evaluateDicePlayer(iPlayer)
@@ -55,13 +60,13 @@ func (g *game) evaluateDicePlayer(iPlayer int) {
 	var iDice int = 0
 	player := g.players[iPlayer]
 	for _, dice := range player.Dices() {
-		if dice.GetNumber() == 6 {
+		if dice.Number() == 6 {
 			player.RemoveDice(iDice)
 			player.AddPoint()
 			iDice--
 		}
 
-		if dice.GetNumber() == 1 {
+		if dice.Number() == 1 {
 			if iPlayer+1 == len(g.players) {
 				g.players[iPlayer+1-len(g.players)].AddDice(dice)
 			} else {
