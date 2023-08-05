@@ -2,6 +2,7 @@ package dice_game
 
 import (
 	"fmt"
+	"strings"
 )
 
 type Game interface {
@@ -10,7 +11,7 @@ type Game interface {
 
 type game struct {
 	lastActivePlayer       []int
-	playerWithHighestPoint int
+	playerWithHighestPoint []int
 	highestPoint           int
 	playerActive           int
 	players                []Player
@@ -41,10 +42,14 @@ func (g *game) Start() {
 
 		g.playerActive = 0
 		g.lastActivePlayer = []int{}
+		g.playerWithHighestPoint = []int{}
 		fmt.Printf("Setelah evaluasi:\n")
-		for iPlayer, player := range g.players {
+		for iPlayer := range g.players {
 			g.evaluateDicePlayer(iPlayer)
-			player.Info(iPlayer)
+		}
+
+		for iPlayer := range g.players {
+			g.mergeExtraDice(iPlayer)
 		}
 
 		if g.playerActive <= 1 {
@@ -68,25 +73,31 @@ func (g *game) evaluateDicePlayer(iPlayer int) {
 
 		if dice.Number() == 1 {
 			if iPlayer+1 == len(g.players) {
-				g.players[iPlayer+1-len(g.players)].AddDice(dice)
+				g.players[iPlayer+1-len(g.players)].AddExtraDice(dice)
 			} else {
-				g.players[iPlayer+1].AddDice(dice)
+				g.players[iPlayer+1].AddExtraDice(dice)
 			}
 			player.RemoveDice(iDice)
 			iDice--
 		}
+
 		iDice++
 	}
+}
 
+func (g *game) mergeExtraDice(iPlayer int) {
+	player := g.players[iPlayer]
+	player.MergeExtra()
 	if len(player.Dices()) > 0 {
 		g.playerActive++
 		g.lastActivePlayer = append(g.lastActivePlayer, iPlayer+1)
 	}
 
-	if player.Point() > g.highestPoint {
+	if player.Point() >= g.highestPoint {
 		g.highestPoint = player.Point()
-		g.playerWithHighestPoint = iPlayer
+		g.playerWithHighestPoint = append(g.playerWithHighestPoint, iPlayer+1)
 	}
+	player.Info(iPlayer)
 }
 
 func (g *game) gameResult() {
@@ -96,5 +107,15 @@ func (g *game) gameResult() {
 	} else {
 		fmt.Printf("Game berakhir karena hanya pemain #%d yang memiliki dadu.\n", g.lastActivePlayer[0])
 	}
-	fmt.Printf("Game dimenangkan oleh pemain #%d karena memiliki poin lebih banyak dari pemain lainnya.\n", g.playerWithHighestPoint+1)
+	if len(g.playerWithHighestPoint) == 1 {
+		fmt.Printf("Game dimenangkan oleh pemain #%d karena memiliki poin lebih banyak dari pemain lainnya.\n", g.playerWithHighestPoint[0])
+	} else if len(g.playerWithHighestPoint) == len(g.players) {
+		fmt.Printf("Game seri karena semua pemain mempunyai poin yang sama.\n")
+	} else {
+		playerWithHighestPoint := []string{}
+		for count := 0; count < len(g.playerWithHighestPoint); count++ {
+			playerWithHighestPoint = append(playerWithHighestPoint, fmt.Sprintf("pemain#%d", g.playerWithHighestPoint[count]))
+		}
+		fmt.Printf("Game seri karena %s mempunyai poin yang sama.\n", strings.Join(playerWithHighestPoint, ", "))
+	}
 }
