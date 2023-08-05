@@ -20,12 +20,12 @@ func main() {
 func getTotalPlayerAndTotalDice() error {
 	fmt.Print("Total pemain: ")
 	fmt.Scan(&totalPlayer)
-	fmt.Print("Total dadu: ")
-	fmt.Scan(&totalDice)
 	if totalPlayer < 1 {
 		return fmt.Errorf("total player kurang dari 1 orang")
 	}
 
+	fmt.Print("Total dadu: ")
+	fmt.Scan(&totalDice)
 	if totalDice < 1 {
 		return fmt.Errorf("total dadu kurang dari 1 dadu")
 	}
