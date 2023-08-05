@@ -13,12 +13,14 @@ type Player interface {
 	RemoveDice(index int)
 	PrintAllDiceNumber() string
 	Info(index int)
-	AddDice(dice Dice)
+	AddExtraDice(dice Dice)
+	MergeExtra()
 }
 
 type player struct {
-	dices []Dice
-	point int
+	dices      []Dice
+	point      int
+	extraDices []Dice
 }
 
 func NewPlayer(diceCount int) Player {
@@ -32,6 +34,7 @@ func NewPlayer(diceCount int) Player {
 }
 
 func (p *player) Play() {
+	p.extraDices = []Dice{}
 	for _, dice := range p.dices {
 		dice.Roll()
 	}
@@ -59,6 +62,7 @@ func (p *player) RemoveDice(index int) {
 		p.dices = p.dices[:index]
 		return
 	}
+
 	p.dices = append(p.dices[:index], p.dices[index+1:]...)
 }
 
@@ -78,8 +82,12 @@ func (p *player) Info(index int) {
 	fmt.Printf("Pemain #%d (%d): %s\n", (index + 1), p.Point(), p.PrintAllDiceNumber())
 }
 
-func (p *player) AddDice(dice Dice) {
+func (p *player) AddExtraDice(dice Dice) {
 	if len(p.dices) > 0 {
-		p.dices = append(p.dices, dice)
+		p.extraDices = append(p.extraDices, dice)
 	}
+}
+
+func (p *player) MergeExtra() {
+	p.dices = append(p.dices, p.extraDices...)
 }
